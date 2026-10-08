@@ -1,5 +1,8 @@
 {
   "name": "NutriRecommends Family Meal Planner",
   "description": "Coordinate household dietary preferences, food allergies, and calorie targets across family members with AI-powered weekly meal planning, pantry-synced grocery lists, and daily cooking instructions.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

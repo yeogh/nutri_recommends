@@ -6,6 +6,12 @@ export default async function handler(req, res) {
   }
 
   const hasMcpKey = Boolean(process.env.SMITHERY_API_KEY && process.env.SMITHERY_API_KEY.trim() !== '');
+  const hasSpoonacularKey = Boolean(
+    process.env.SPOONACULAR_API_KEY && process.env.SPOONACULAR_API_KEY.trim() !== ''
+  );
+  const hasGeminiKey = Boolean(
+    process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== ''
+  );
   const mcpUrl = process.env.NUTRIBALANCE_MCP_URL || 'https://mcp.smithery.ai/ghyeogh';
 
   return res.status(200).json({
@@ -16,11 +22,23 @@ export default async function handler(req, res) {
     endpoints: {
       health: '/api/health',
       nutribalance: '/api/nutribalance',
+      spoonacular: '/api/spoonacular',
+      gemini: '/api/gemini',
     },
-    mcp: {
-      provider: 'nutribalance-mcp',
-      url: mcpUrl,
-      configured: hasMcpKey,
+    integrations: {
+      mcp: {
+        provider: 'nutribalance-mcp',
+        url: mcpUrl,
+        configured: hasMcpKey,
+      },
+      spoonacular: {
+        endpoint: 'https://api.spoonacular.com/recipes/complexSearch',
+        configured: hasSpoonacularKey,
+      },
+      gemini: {
+        model: 'gemini-3.8-flash',
+        configured: hasGeminiKey,
+      },
     },
   });
 }

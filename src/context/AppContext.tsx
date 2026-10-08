@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
-import { DietaryMode, FamilyMember, PantryItem, ProposedMeal, SubscriptionTier } from '../types';
+import {
+  DietaryMode,
+  FamilyMember,
+  PantryItem,
+  PreferredCuisine,
+  ProposedMeal,
+  SubscriptionTier,
+} from '../types';
 
 const INITIAL_FAMILY: FamilyMember[] = [
   {
@@ -7,7 +14,16 @@ const INITIAL_FAMILY: FamilyMember[] = [
     name: 'Alex (Parent)',
     role: 'Parent',
     age: 38,
+    gender: 'male',
+    heightCm: 178,
+    weightKg: 76,
+    activityLevel: 'active',
+    goal: 'muscle-gain',
     tdee: 2250,
+    proteinTargetG: 168,
+    carbsTargetG: 225,
+    fatTargetG: 75,
+    keyNutrients: ['Omega-3 EPA/DHA', 'Magnesium', 'Zinc'],
     dietaryPreference: 'high-protein',
     allergies: ['Shellfish'],
     shareToken: 'alex-link-892',
@@ -17,7 +33,16 @@ const INITIAL_FAMILY: FamilyMember[] = [
     name: 'Sam (Parent)',
     role: 'Parent',
     age: 36,
+    gender: 'female',
+    heightCm: 165,
+    weightKg: 62,
+    activityLevel: 'moderate',
+    goal: 'maintenance',
     tdee: 1950,
+    proteinTargetG: 122,
+    carbsTargetG: 219,
+    fatTargetG: 65,
+    keyNutrients: ['Dietary Iron', 'Folate (B9)', 'Vitamin D3'],
     dietaryPreference: 'standard',
     allergies: ['Peanuts'],
     shareToken: 'sam-link-441',
@@ -27,7 +52,16 @@ const INITIAL_FAMILY: FamilyMember[] = [
     name: 'Maya (Teen)',
     role: 'Teen',
     age: 14,
+    gender: 'female',
+    heightCm: 160,
+    weightKg: 51,
+    activityLevel: 'moderate',
+    goal: 'balanced-energy',
     tdee: 2000,
+    proteinTargetG: 115,
+    carbsTargetG: 250,
+    fatTargetG: 60,
+    keyNutrients: ['Plant Iron + Vitamin C', 'Vitamin B12', 'Calcium'],
     dietaryPreference: 'vegetarian',
     allergies: [],
     shareToken: 'maya-link-309',
@@ -37,7 +71,16 @@ const INITIAL_FAMILY: FamilyMember[] = [
     name: 'Leo (Child)',
     role: 'Child',
     age: 9,
+    gender: 'male',
+    heightCm: 135,
+    weightKg: 32,
+    activityLevel: 'active',
+    goal: 'balanced-energy',
     tdee: 1650,
+    proteinTargetG: 85,
+    carbsTargetG: 210,
+    fatTargetG: 52,
+    keyNutrients: ['Calcium', 'Vitamin D', 'Beta-Carotene'],
     dietaryPreference: 'standard',
     allergies: ['Peanuts'],
     shareToken: 'leo-link-117',
@@ -54,6 +97,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Fish'],
     macros: { calories: 580, protein: 44, carbs: 42, fat: 24 },
     nutrientHighlight: 'Rich in Omega-3 EPA/DHA & Vitamin D (+18 eating score)',
+    recommendedForMember: 'Alex (Parent)',
+    memberNutrientReason: 'Matches Alex’s 2,250 kcal High-Protein TDEE target (44g protein) & Shellfish-free allergy guardrail',
     votes: 4,
     votedBy: ['Alex (Parent)', 'Sam (Parent)', 'Leo (Child)', 'Maya (Teen)'],
     feedback: [
@@ -85,6 +130,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Dairy'],
     macros: { calories: 540, protein: 26, carbs: 54, fat: 23 },
     nutrientHighlight: 'High Folate, Dietary Fiber & Iron synergy',
+    recommendedForMember: 'Maya (Teen)',
+    memberNutrientReason: 'Tailored for Maya’s Vegetarian growth needs (2,000 kcal TDEE) with plant iron + Vitamin C absorption',
     votes: 3,
     votedBy: ['Maya (Teen)', 'Sam (Parent)', 'Alex (Parent)'],
     feedback: [
@@ -114,6 +161,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Soy', 'Sesame', 'Eggs'],
     macros: { calories: 610, protein: 39, carbs: 64, fat: 19 },
     nutrientHighlight: 'Balanced B-Vitamins, Zinc & Fermented Probiotics',
+    recommendedForMember: 'Sam (Parent)',
+    memberNutrientReason: 'Aligned with Sam’s 1,950 kcal Standard Balanced macros & 100% Peanut-Free requirement',
     votes: 4,
     votedBy: ['Alex (Parent)', 'Sam (Parent)', 'Maya (Teen)', 'Leo (Child)'],
     feedback: [
@@ -143,6 +192,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: [],
     macros: { calories: 510, protein: 22, carbs: 68, fat: 16 },
     nutrientHighlight: 'Zero-Allergen Profile + Beta-Carotene & Magnesium boost',
+    recommendedForMember: 'Leo (Child)',
+    memberNutrientReason: 'Designed for Leo’s 1,650 kcal growing child energy needs — 100% Peanut-Free & gentle beta-carotene',
     votes: 3,
     votedBy: ['Maya (Teen)', 'Sam (Parent)', 'Leo (Child)'],
     feedback: [],
@@ -169,6 +220,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Dairy'],
     macros: { calories: 530, protein: 46, carbs: 14, fat: 32 },
     nutrientHighlight: 'Low-Glycemic Keto Fit + Potassium & Monounsaturated Fats',
+    recommendedForMember: 'Alex (Parent)',
+    memberNutrientReason: 'Supports Alex’s lean muscle recovery (46g protein, low-glycemic carbs) with Shellfish-free ingredients',
     votes: 3,
     votedBy: ['Alex (Parent)', 'Sam (Parent)', 'Leo (Child)'],
     feedback: [],
@@ -194,6 +247,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Wheat', 'Dairy'],
     macros: { calories: 560, protein: 21, carbs: 72, fat: 18 },
     nutrientHighlight: 'Calcium, Vitamin K & Slow-Release Complex Carbs',
+    recommendedForMember: 'Maya (Teen) & Leo (Child)',
+    memberNutrientReason: 'Meets Teen & Child bone-growth Calcium, Vitamin K & complex carbohydrate needs',
     votes: 2,
     votedBy: ['Maya (Teen)', 'Leo (Child)'],
     feedback: [],
@@ -218,6 +273,8 @@ const INITIAL_MEALS: ProposedMeal[] = [
     allergens: ['Soy'],
     macros: { calories: 520, protein: 24, carbs: 58, fat: 20 },
     nutrientHighlight: 'Vitamin C + Plant Iron Absorption Enhancer',
+    recommendedForMember: 'Sam (Parent) & Maya (Teen)',
+    memberNutrientReason: 'Balances Sam’s 1,950 kcal target & Maya’s Vegetarian plant-protein + iron profile (Peanut & Shellfish free)',
     votes: 3,
     votedBy: ['Maya (Teen)', 'Sam (Parent)', 'Alex (Parent)'],
     feedback: [],
@@ -246,10 +303,15 @@ const INITIAL_PANTRY: PantryItem[] = [
 
 interface AppContextType {
   familyMembers: FamilyMember[];
+  addFamilyMember: (member: Omit<FamilyMember, 'id' | 'shareToken'>) => void;
+  updateFamilyMember: (id: string, member: Omit<FamilyMember, 'id' | 'shareToken'>) => void;
+  removeFamilyMember: (id: string) => void;
   meals: ProposedMeal[];
   pantry: PantryItem[];
   selectedDietaryMode: DietaryMode;
   setSelectedDietaryMode: (mode: DietaryMode) => void;
+  selectedCuisine: PreferredCuisine;
+  setSelectedCuisine: (cuisine: PreferredCuisine) => void;
   subscriptionTier: SubscriptionTier;
   setSubscriptionTier: (tier: SubscriptionTier) => void;
   planLocked: boolean;
@@ -258,7 +320,12 @@ interface AppContextType {
   addMealFeedback: (mealId: string, memberName: string, comment: string) => void;
   updatePantryItem: (id: string, delta: number) => void;
   addReceiptToPantry: (items: PantryItem[]) => void;
-  replaceMealsFromMcp: (mode: DietaryMode, mcpMeals?: ProposedMeal[]) => void;
+  replaceMealsFromMcp: (
+    mode: DietaryMode,
+    cuisine?: PreferredCuisine,
+    mcpMeals?: ProposedMeal[]
+  ) => void;
+  addProposedMeal: (meal: ProposedMeal) => void;
   referralOrdersCount: number;
   referralRevenueEarned: number;
   recordDeliveryOrder: (orderSubtotal: number) => void;
@@ -268,15 +335,36 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [familyMembers] = useState<FamilyMember[]>(INITIAL_FAMILY);
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(INITIAL_FAMILY);
   const [meals, setMeals] = useState<ProposedMeal[]>(INITIAL_MEALS);
   const [pantry, setPantry] = useState<PantryItem[]>(INITIAL_PANTRY);
   const [selectedDietaryMode, setSelectedDietaryMode] = useState<DietaryMode>('standard');
+  const [selectedCuisine, setSelectedCuisine] = useState<PreferredCuisine>('Any');
   const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>('free');
   const [planLocked, setPlanLocked] = useState<boolean>(false);
   const [referralOrdersCount, setReferralOrdersCount] = useState<number>(500);
   const [referralRevenueEarned, setReferralRevenueEarned] = useState<number>(4000);
   const [dailyEatingScore, setDailyEatingScore] = useState<number>(88);
+
+  const addFamilyMember = (member: Omit<FamilyMember, 'id' | 'shareToken'>) => {
+    const slug = member.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'member';
+    const newMember: FamilyMember = {
+      ...member,
+      id: `m-${Date.now()}`,
+      shareToken: `${slug}-link-${Math.floor(100 + Math.random() * 900)}`,
+    };
+    setFamilyMembers((prev) => [...prev, newMember]);
+  };
+
+  const updateFamilyMember = (id: string, updated: Omit<FamilyMember, 'id' | 'shareToken'>) => {
+    setFamilyMembers((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, ...updated } : m))
+    );
+  };
+
+  const removeFamilyMember = (id: string) => {
+    setFamilyMembers((prev) => (prev.length > 1 ? prev.filter((m) => m.id !== id) : prev));
+  };
 
   const voteForMeal = (mealId: string, memberName: string) => {
     const updater = (list: ProposedMeal[]) =>
@@ -314,39 +402,146 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setPantry((prev) => [...items, ...prev]);
   };
 
-  const replaceMealsFromMcp = (mode: DietaryMode, mcpMeals?: ProposedMeal[]) => {
+  const replaceMealsFromMcp = (
+    mode: DietaryMode,
+    cuisine: PreferredCuisine = selectedCuisine,
+    mcpMeals?: ProposedMeal[]
+  ) => {
     setSelectedDietaryMode(mode);
+    setSelectedCuisine(cuisine);
     setDailyEatingScore(mode === 'high-protein' ? 92 : mode === 'vegan' ? 94 : mode === 'keto' ? 89 : 90);
     if (mcpMeals && mcpMeals.length > 0) {
       setMeals(mcpMeals);
       return;
     }
-    // Rotate and tailor macros/tags based on selected NutriBalance dietary mode
-    setMeals((prev) =>
-      prev.map((m) => {
+
+    const cuisineTitles: Record<Exclude<PreferredCuisine, 'Any'>, string[]> = {
+      Mediterranean: [
+        'Mediterranean Herb-Baked Salmon & Quinoa Pilaf',
+        'Greek Chickpea, Spinach & Halloumi Power Bowl',
+        'Lemon Oregano Turkey & Zucchini Souvlaki Bowl',
+        'Cypriot Red Lentil, Olive & Sweet Potato Stew',
+        'Grilled Aegean Chicken & Cauliflower Skillet',
+        'Tuscan White Bean, Kale & Sun-Dried Tomato Gnocchi',
+        'Santorini Garlic Tofu & Crisp Snap Pea Orzo',
+      ],
+      Japanese: [
+        'Miso-Glazed Salmon & Edamame Quinoa Donburi',
+        'Kyoto Sesame Tofu, Chickpea & Spinach Rice Bowl',
+        'Teriyaki Ginger Ground Turkey & Zucchini Don',
+        'Japanese Golden Curry Red Lentil & Sweet Potato Nabe',
+        'Shio-Koji Grilled Chicken & Riced Cauliflower Skillet',
+        'Yuzu White Bean, Kale & Shiitake Udon',
+        'Matcha-Lime Tofu & Sugar Snap Pea Soba Bowls',
+      ],
+      Korean: [
+        'Gochujang-Glazed Baked Salmon & Quinoa Bibimbap',
+        'Korean Crispy Dubu (Tofu) & Chickpea Spinach Bowl',
+        'Seoul Gochujang Turkey & Zucchini Bibimbap',
+        'Doenjang Coconut Red Lentil & Sweet Potato Stew',
+        'Dakgalbi Grilled Chicken & Cauliflower Skillet',
+        'Korean Garlic White Bean, Kale & Rice Cake Skillet',
+        'Sesame Lemongrass Tofu & Snap Pea Japchae',
+      ],
+      Chinese: [
+        'Ginger-Scallion Baked Salmon & Quinoa Fried Rice',
+        'Sichuan Mild Chickpea, Bok Choy & Tofu Bowl',
+        'Cantonese Savory Ground Turkey & Zucchini Rice Bowl',
+        'Five-Spice Red Lentil & Sweet Potato Claypot',
+        'Wok-Seared Garlic Chicken & Cauliflower Rice Skillet',
+        'Shanghai Braised White Bean, Kale & Rice Noodles',
+        'Crispy Tofu & Sugar Snap Pea Garlic Sauce Bowl',
+      ],
+      Indian: [
+        'Tandoori-Spiced Baked Salmon & Jeera Quinoa Pilaf',
+        'Palak Chana (Spinach Chickpea) & Paneer Power Bowl',
+        'Keema Masala Ground Turkey & Zucchini Brown Rice',
+        'Creamy Coconut Red Lentil & Sweet Potato Tadka Dal',
+        'Tikka Grilled Chicken & Spiced Gobhi (Cauliflower) Skillet',
+        'Masala White Bean, Kale & Sun-Dried Tomato Skillet',
+        'Coconut Curry Leaf Tofu & Snap Pea Rice Noodles',
+      ],
+      Mexican: [
+        'Chipotle-Lime Baked Salmon & Quinoa Fiesta Bowl',
+        'Oaxacan Spiced Chickpea, Spinach & Queso Asado Bowl',
+        'Ancho-Chili Ground Turkey & Zucchini Burrito Bowl',
+        'Mexican Crema Red Lentil & Sweet Potato Picadillo',
+        'Avocado Lime Grilled Chicken & Cauliflower Taco Skillet',
+        'Poblano White Bean, Kale & Roasted Tomato Skillet',
+        'Veracruz Citrus Tofu & Crisp Snap Pea Rice Bowl',
+      ],
+      Italian: [
+        'Amalfi Lemon-Herb Salmon & Quinoa Risotto',
+        'Sicilian Chickpea, Baby Spinach & Crispy Caciocavallo Bowl',
+        'Bolognese-Style Herbed Turkey & Zucchini Polenta Bowl',
+        'Umbrian Red Lentil & Sweet Potato Rustico Stew',
+        'Florentine Grilled Chicken & Garlic Cauliflower Skillet',
+        'Tuscan White Bean, Kale & Sun-Dried Tomato Gnocchi',
+        'Venetian Garlic-Herb Tofu & Snap Pea Linguine',
+      ],
+      Thai: [
+        'Thai Lime-Coriander Baked Salmon & Jasmine Quinoa',
+        'Chiang Mai Golden Chickpea, Spinach & Crispy Tofu Bowl',
+        'Pad Kra Pao (Holy Basil) Turkey & Zucchini Bowl',
+        'Thai Red Curry Coconut Lentil & Sweet Potato Bowl',
+        'Satay-Free Lemongrass Grilled Chicken & Cauliflower Skillet',
+        'Thai Green Herb White Bean, Kale & Rice Noodle Skillet',
+        'Lemongrass Tofu & Snap Pea Coconut Noodle Bowls',
+      ],
+    };
+
+    // Rotate and tailor meals based on selected cuisine and NutriBalance dietary mode
+    setMeals(
+      INITIAL_MEALS.map((m, idx) => {
+        const baseName =
+          cuisine !== 'Any' && cuisineTitles[cuisine]?.[idx]
+            ? cuisineTitles[cuisine][idx]
+            : m.name;
+        const cuisineBadge = cuisine !== 'Any' ? `${cuisine} Cuisine • ` : '';
+
         if (mode === 'high-protein') {
           return {
             ...m,
+            name: baseName,
+            cuisine,
+            dietaryMode: mode,
             macros: { ...m.macros, protein: Math.max(38, m.macros.protein + 8) },
-            nutrientHighlight: `NutriBalance High-Protein Target • ${m.nutrientHighlight}`,
+            nutrientHighlight: `${cuisineBadge}NutriBalance High-Protein Target • ${m.nutrientHighlight}`,
           };
         }
         if (mode === 'keto') {
           return {
             ...m,
+            name: baseName,
+            cuisine,
+            dietaryMode: mode,
             macros: { calories: m.macros.calories, protein: m.macros.protein, carbs: 16, fat: 36 },
-            nutrientHighlight: `NutriBalance Ketogenic Macro Ratio • ${m.nutrientHighlight}`,
+            nutrientHighlight: `${cuisineBadge}NutriBalance Ketogenic Macro Ratio • ${m.nutrientHighlight}`,
           };
         }
         if (mode === 'vegan') {
           return {
             ...m,
-            name: m.name.replace('Salmon', 'Crispy Tofu').replace('Chicken', 'Jackfruit').replace('Turkey', 'Tempeh').replace('Halloumi', 'Smoked Almond Feta'),
+            name: baseName
+              .replace('Salmon', 'Crispy Tofu')
+              .replace('Chicken', 'Jackfruit')
+              .replace('Turkey', 'Tempeh')
+              .replace('Halloumi', 'Smoked Almond Feta')
+              .replace('Paneer', 'Tofu')
+              .replace('Queso Asado', 'Avocado Crema'),
+            cuisine,
+            dietaryMode: mode,
             allergens: m.allergens.filter((a) => a !== 'Fish' && a !== 'Dairy' && a !== 'Eggs'),
-            nutrientHighlight: `NutriBalance 100% Plant-Based • B12 & Iron Optimized`,
+            nutrientHighlight: `${cuisineBadge}NutriBalance 100% Plant-Based • B12 & Iron Optimized`,
           };
         }
-        return m;
+        return {
+          ...m,
+          name: baseName,
+          cuisine,
+          dietaryMode: mode,
+          nutrientHighlight: `${cuisineBadge}${m.nutrientHighlight}`,
+        };
       })
     );
   };
@@ -357,14 +552,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setReferralRevenueEarned((r) => Number((r + commission).toFixed(2)));
   };
 
+  const addProposedMeal = (meal: ProposedMeal) => {
+    setMeals((prev) => [meal, ...prev]);
+  };
+
   return (
     <AppContext.Provider
       value={{
         familyMembers,
+        addFamilyMember,
+        updateFamilyMember,
+        removeFamilyMember,
         meals,
         pantry,
         selectedDietaryMode,
         setSelectedDietaryMode,
+        selectedCuisine,
+        setSelectedCuisine,
         subscriptionTier,
         setSubscriptionTier,
         planLocked,
@@ -374,6 +578,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updatePantryItem,
         addReceiptToPantry,
         replaceMealsFromMcp,
+        addProposedMeal,
         referralOrdersCount,
         referralRevenueEarned,
         recordDeliveryOrder,

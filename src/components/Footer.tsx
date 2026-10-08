@@ -42,7 +42,17 @@ export const Footer: React.FC = () => {
               USDA FoodData Central CC0 1.0 Public Domain Dedication
               <ExternalLink className="h-3 w-3" />
             </a>
-            .
+            , with recipe search powered by{' '}
+            <a
+              href="https://spoonacular.com/food-api/docs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-emerald-700 underline hover:text-emerald-800 inline-flex items-center gap-0.5"
+            >
+              Spoonacular Food API Terms
+              <ExternalLink className="h-3 w-3" />
+            </a>{' '}
+            and AI insights via Google Gemini API.
           </p>
           <p className="text-stone-500">
             <strong>Academic Disclaimer:</strong> This application is an <strong>SMU course project</strong> and is not affiliated with, sponsored by, or endorsed by NutriBalance, Smithery, USDA, or any supermarket or delivery provider mentioned.
