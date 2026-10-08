@@ -16,7 +16,7 @@ In the footer of every screen, add the attribution line required by any data sou
 
 GUARDRAILS: Never write the key into any file, any comment, or the README. Never create a variable whose name starts with VITE_. Never call datamall2.mytransport.sg from browser code; every LTA call happens inside api/. Never print the key, or any part of it, in a response or a log. No new npm packages. No database, no login. Do not use any organisation name or logo in a way that suggests this app is official or endorsed.
 
-CONTEXT: Deployed on Vercel from GitHub at https://mcp-meal-plan.vercel.app/. The app targets family meal planners who coordinate preferences, allergies, and calories for multiple household members, as well as commercial home-delivery meal providers, ad sponsors, and grocery merchants (supermarket chains and delivery platforms).
+CONTEXT: The app targets family meal planners who coordinate preferences, allergies, and calories for multiple household members, as well as commercial home-delivery meal providers, ad sponsors, and grocery merchants (supermarket chains and delivery platforms).
 Three MCP servers power the AI features:
 •	Pantry Persona — pantry inventory, shopping lists, expiration alerts, receipt processing, spending insights.
 •	Agent Chef — weekly dinner proposals, household voting, automated grocery list generation, cart checkout approval.
