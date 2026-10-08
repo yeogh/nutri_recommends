@@ -3,6 +3,7 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import nutribalanceHandler from './api/nutribalance.js';
+import healthHandler from './api/health.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +15,7 @@ async function startServer() {
   app.use(express.json());
 
   // API routes sharing handlers with Vercel serverless functions in /api
+  app.all('/api/health', (req, res) => healthHandler(req, res));
   app.all('/api/nutribalance', (req, res) => nutribalanceHandler(req, res));
 
   if (process.env.NODE_ENV !== 'production') {
